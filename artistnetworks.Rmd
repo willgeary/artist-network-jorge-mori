@@ -1,0 +1,82 @@
+---
+title: "Visualizing Artist Networks"
+output: html_notebook
+---
+
+Read in the data:
+
+```{r}
+nodes <- read.csv("nodes.csv", header=T)
+edges <- read.csv("edges.csv", header=T)
+```
+
+Here is what the nodes data looks like:
+
+```{r}
+nodes
+```
+
+Here is what the edges data looks like:
+
+```{r}
+edges
+```
+
+Install and load visNetwork library:
+
+```{r}
+install.packages("visNetwork")
+library('visNetwork') 
+```
+
+
+Define node characteristics:
+
+```{r}
+nodes$shape <- "dot"  
+nodes$shadow <- FALSE # No shadow
+nodes$title <- paste0(nodes$name, " (", nodes$type, ")") # Text on hover
+nodes$label <- nodes$name # Node label
+nodes$borderWidth <- 1 # Node border width
+nodes$color.background <- c("yellow", "green", "skyblue", "red", "green", "slategrey")[nodes$type_id]
+nodes$color.border <- "black"
+nodes$color.highlight.background <- "orange"
+nodes$color.highlight.border <- "darkred"
+```
+
+Define edge characteristics:
+
+```{r}
+edges$color <- "gray"    # line color  
+edges$smooth <- TRUE    # should the edges be curved?
+edges$shadow <- FALSE    # edge shadow
+```
+
+
+Create network visualization:
+
+```{r}
+v <- visNetwork(nodes, edges) %>%
+  visOptions(highlightNearest = TRUE, 
+             selectedBy = "type") %>%
+  visLegend()
+
+v
+```
+
+Save network visualization to html file:
+
+```{r}
+# Load htmlwidgets library
+install.packages("htmlwidgets")
+library(htmlwidgets)
+
+# Save network visualization to html file
+outputfilename = "index.html"
+htmlwidgets::saveWidget(v, outputfilename)
+```
+
+
+
+
+
